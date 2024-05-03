@@ -25,7 +25,7 @@ load_dotenv()
 SECRET_KEY = "django-insecure-wghyvtl3_m4+%a7ke5r*1@vv3lfc28g%b^bz5#pmiw+yc3qf6c"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = True if os.getenv("DEBUG") == "True" else False
 
 ALLOWED_HOSTS = []
 
@@ -52,6 +52,13 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTStatelessUserAuthentication',
+    ],
+}
+
 
 ROOT_URLCONF = "user_management_sys.urls"
 
@@ -85,6 +92,9 @@ DATABASES = {
         'PASSWORD': os.getenv('SQL_PASSWORD'),
         'HOST': os.getenv('SQL_HOST'),
         'PORT': os.getenv('SQL_PORT'),
+        'OPTIONS': {
+            'sql_mode': 'STRICT_TRANS_TABLES',
+        },
     }
 }
 

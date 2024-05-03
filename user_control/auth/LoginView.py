@@ -1,6 +1,8 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from user_control.models import User
 
 
@@ -13,8 +15,9 @@ class LoginView(APIView):
             user = User.objects.filter(email=email).first()
             if user:
                 if user.check_password(password):
-                    # Return whatever response you want for successful signin
-                    return Response({'message': 'Signin successful'}, status=status.HTTP_200_OK)
+                    # Generate JWT token
+                    refresh = RefreshToken.for_user(user)
+                    return Response({'token': str(refresh.access_token)}, status=status.HTTP_200_OK)
                 else:
                     return Response({'error': 'Invalid password'}, status=status.HTTP_401_UNAUTHORIZED)
             else:
